@@ -33,16 +33,17 @@ def write_puzzle(x, y, im, name):
     dx = int(w/x)
     dy = int(h/y)
     pieces = []
-    for i in range(0,w-dx,dx):
-        for j in range(0,h-dy,dy):
+    for i in range(0,x*dx,dx):
+        for j in range(0,y*dy,dy):
+#            print("crop: ",(i, j, i+dx, j+dy))
             pieces.append(im.crop((i, j, i+dx, j+dy)))
     #print(len(pieces))
     random.shuffle(pieces)
     random.shuffle(pieces)
     new_im = Image.new('RGB', (x*dx,y*dy))
     index = 0
-    for i in range(0,w-dx,dx):
-        for j in range(0,h-dy,dy):
+    for i in range(0,x*dx,dx):
+        for j in range(0,y*dy,dy):
             new_im.paste(pieces[index], (i , j))
             index+=1
     return new_im
@@ -72,8 +73,9 @@ def read_blob(puzzles):
         for record in cursor:
             puzzleid, horizontalelements, verticalelements, picturedata = record
             filename = str(puzzleid) + ".jpg"
-            write_file(picturedata, filename)
+#            write_file(picturedata, filename)
             puzzle = write_puzzle(horizontalelements, verticalelements, Image.open(io.BytesIO(picturedata)), puzzleid)
+#            puzzle.save(str(puzzleid) + "_pzl.jpg")
             imgByteArr = io.BytesIO()
             puzzle.save(imgByteArr, format='JPEG')
             imgByteArr = imgByteArr.getvalue()
@@ -88,9 +90,9 @@ def read_blob(puzzles):
 
 ############################################################
 
-read_blob(list(range(10,11)))
+read_blob(list(range(1,2)))
 print("ok")
-#im = Image.open("10.jpg")
-#x = 15
+#im = Image.open("1000_1000.jpg")
+#x = 10
 #y = 10
-#write_puzzle(x, y, im, '10')
+#write_puzzle(x, y, im, '10').save("1000_1000_pzl.jpg")
